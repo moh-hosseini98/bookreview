@@ -8,8 +8,11 @@ services:
       - ./app:/app  
     depends_on:
       - db  
+      - redis
     environment:
       - DB_ASYNC_CONNECTION_STR=${DB_ASYNC_CONNECTION_STR}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
     env_file:
       - .env
   db:
@@ -25,5 +28,10 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     env_file:
       - .env  
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - "6379:6379"    
+    command: redis-server  
 volumes:
   postgres_data:
