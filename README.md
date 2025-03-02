@@ -1,0 +1,1 @@
+🚀 The ultimate async setup: FastAPI, SQLModel, Alembic,Docker,Postgres 🚀

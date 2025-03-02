@@ -1,0 +1,29 @@
+services:
+
+  fastapi-app:
+    build: .
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ./app:/app  
+    depends_on:
+      - db  
+    environment:
+      - DB_ASYNC_CONNECTION_STR=${DB_ASYNC_CONNECTION_STR}
+    env_file:
+      - .env
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    env_file:
+      - .env  
+volumes:
+  postgres_data:
