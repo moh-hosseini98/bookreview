@@ -1,4 +1,4 @@
-🚀 Features
+🚀 #Features
 
 FastAPI framework for high performance
 PostgreSQL database integration
@@ -23,6 +23,7 @@ DELETE: Remove resources.
 @app.delete("/books/{book_uid}")
 
 REVIEW CRUD:
+
 GET: Read and retrieve data. Supports query and path parameters.
 all reviews for  book : @app.get("/books/{book_uid}/reviews")
 retrieve one review for book : @app.get("/books/{book_uid}/reviws/{review_uid}")
