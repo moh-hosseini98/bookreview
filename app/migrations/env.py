@@ -8,7 +8,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from sqlmodel import SQLModel
 from core.config import settings
-from models import *
+from books.models import *
+from auth.models import *
+from reviews.models import *
 
 
 # this is the Alembic Config object, which provides
@@ -33,7 +35,7 @@ target_metadata = SQLModel.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-config.set_main_option("sqlalchemy.url", settings.DB_ASYNC_CONNECTION_STR)
+config.set_main_option("sqlalchemy.url", settings.db_async_connection_str)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
