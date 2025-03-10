@@ -8,7 +8,7 @@ from datetime import datetime
 
 from .service import ReviewService
 from .models import Review
-from .schemas import ReviewCreate,ReviewUpdate
+from .schemas import ReviewBase,ReviewCreate,ReviewUpdate,ReviewReadWithUser
 
 
 
@@ -17,7 +17,7 @@ review_service = ReviewService()
 review_router = APIRouter()
 
 @review_router.post(
-    "/{book_uid}/reviews"
+    "/books/{book_uid}/reviews"
 )
 async def create_review(
     *,
@@ -32,7 +32,7 @@ async def create_review(
     return new_review
 
 @review_router.get(
-    "/{book_uid}/reviews"
+    "/books/{book_uid}/reviews"
 )
 async def get_all_reviews(
     book_uid : uuid.UUID,
@@ -43,7 +43,7 @@ async def get_all_reviews(
 
 
 @review_router.get(
-    "/{book_uid}/reviews/{review_uid}"
+    "/books/{book_uid}/reviews/{review_uid}"
 )
 async def get_review(
     book_uid : uuid.UUID,
@@ -58,9 +58,24 @@ async def get_review(
         )
     return review
 
+@review_router.get(
+    "/reviews/{review_uid}",
+    response_model=ReviewReadWithUser
+)
+async def get_review_with_user(
+    review_uid : uuid.UUID,
+    session : AsyncSession = Depends(get_session)
+):
+    review = await review_service.get_review_with_user(review_uid,session)
+    if review is None:
+        raise HTTPException(
+            status_code=404,
+            detail="review not found"
+        )
+    return review
 
 @review_router.patch(
-    "/{book_uid}/reviews/{review_uid}"
+    "/books/{book_uid}/reviews/{review_uid}"
 )
 async def update_review(
     book_uid : uuid.UUID,
@@ -74,7 +89,7 @@ async def update_review(
 
 
 @review_router.delete(
-    "/{book_uid}/reviews/{review_uid}"
+    "/books/{book_uid}/reviews/{review_uid}"
 )
 async def delete_review(
     book_uid : uuid.UUID,

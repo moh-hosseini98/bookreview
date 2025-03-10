@@ -3,8 +3,7 @@ import sqlalchemy.dialects.postgresql as pg
 import uuid
 from datetime import datetime
 
-from auth.models import User
-from books.models import Book
+
 
 
 
@@ -23,7 +22,7 @@ class Review(SQLModel,table=True):
     rating : int = Field(le=5)
     review_text : str = Field(sa_column=Column(pg.VARCHAR,nullable=False))
     user_uid : uuid.UUID | None = Field(default=None,foreign_key="users.uid")
-    user : User | None = Relationship(back_populates="reviews")
+    user : "User" = Relationship(back_populates="reviews",sa_relationship_kwargs={"lazy": "selectin"})
     book_uid : uuid.UUID | None = Field(default=None,foreign_key="books.uid")
-    book : Book | None = Relationship(back_populates="reviews")
+    book : "Book" = Relationship(back_populates="reviews",sa_relationship_kwargs={"lazy": "selectin"})
     created_at : datetime = Field(sa_column=Column(pg.TIMESTAMP,default=datetime.now))

@@ -2,7 +2,7 @@ import uuid
 from fastapi import HTTPException
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select,desc
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload,selectinload
 from datetime import datetime
 
 from .models import Book
@@ -40,7 +40,7 @@ class BookService:
         new_book = Book(
             **book_data_dict
         )
-        #new_book.published_date = datetime.strptime(book_data_dict['published_date'],"%Y-%m-%d")
+        
         new_book.user_uid = user_uid
         session.add(new_book)
         await session.commit()
@@ -50,10 +50,24 @@ class BookService:
     async def get_book(
         self , book_uid : uuid.UUID, session : AsyncSession
     ):
-        #stmt = select(Book).where(Book.uid == book_uid).options(joinedload(Book.user))
+        
         stmt = select(Book).where(Book.uid == book_uid)
         result = await session.exec(stmt)
         book = result.first() 
+
+        return book if book is not None else None
+
+    async def get_book_with_user(
+        self,book_uid : uuid.UUID, session : AsyncSession
+    ):
+        stmt = (
+            select(Book)
+            .options(selectinload(Book.user))
+            .where(Book.uid == book_uid)
+        )    
+        
+        result = await session.exec(stmt)
+        book = result.first()
 
         return book if book is not None else None
 

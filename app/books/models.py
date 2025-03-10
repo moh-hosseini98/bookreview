@@ -3,7 +3,7 @@ import sqlalchemy.dialects.postgresql as pg
 import uuid
 from datetime import datetime
 
-from auth.models import User
+
 
 class Book(SQLModel,table=True):
 
@@ -24,7 +24,7 @@ class Book(SQLModel,table=True):
     page_count : int
     language : str
     user_uid : uuid.UUID | None = Field(default=None,foreign_key="users.uid",ondelete="CASCADE")
-    user : User | None = Relationship(back_populates="books")
+    user : "User" = Relationship(back_populates="books",sa_relationship_kwargs={"lazy": "selectin"})
     reviews: list["Review"] = Relationship(
         back_populates="book", sa_relationship_kwargs={"lazy": "selectin"}
     )

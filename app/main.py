@@ -22,5 +22,5 @@ async def on_startup():
 
 
 app.include_router(book_router,prefix=f"/api/{app.version}/books", tags=["books"])
-app.include_router(review_router, prefix=f"/api/{app.version}/books", tags=["reviews"])
+app.include_router(review_router, prefix=f"/api/{app.version}", tags=["reviews"])
 app.include_router(auth_router,prefix=f"/api/{app.version}/auth",tags=["auth"])

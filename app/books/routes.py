@@ -45,13 +45,13 @@ async def create_book(
     new_book = await book_service.create_book(book_data , user.get('user_uid'), session)
     return new_book
 
-@book_router.get("/{book_uid}",response_model=Book)
+@book_router.get("/{book_uid}",response_model=BookReadWithUser)
 async def get_book(
     book_uid : uuid.UUID , 
     session : AsyncSession = Depends(get_session)
 ):
 
-    book = await book_service.get_book(book_uid,session)
+    book = await book_service.get_book_with_user(book_uid,session)
     if book is None:
         raise HTTPException(
             status_code = 404,

@@ -2,16 +2,17 @@ import uuid
 from fastapi import HTTPException,status
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select,desc
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload,selectinload
 from datetime import datetime
 
 from books.models import Book
+from auth.models import User
 from books.service import BookService
 from auth.service import UserService
 
 
 from .models import Review
-from .schemas import ReviewCreate,ReviewUpdate
+from .schemas import ReviewBase,ReviewCreate,ReviewUpdate,BookReadWithUser
 
 
 book_service = BookService()
@@ -61,11 +62,31 @@ class ReviewService:
         review_uid : uuid.UUID,
         session : AsyncSession
     ):
+
         stmt = (
             select(Review)
-            .where(Review.book_uid == book_uid)
+            .where(
+                Review.book_uid == book_uid,
+                Review.uid == review_uid
+            )
+        )  
+        
+        result = await session.exec(stmt)
+        review = result.first()
+        
+        return review if review is not None else None
+
+    async def get_review_with_user(
+        self,
+        review_uid : uuid.UUID,
+        session : AsyncSession
+    ):
+
+        stmt = (
+            select(Review)
+            .options(selectinload(Review.user))
             .where(Review.uid == review_uid)
-        )
+        )  
         result = await session.exec(stmt)
         review = result.first()
 

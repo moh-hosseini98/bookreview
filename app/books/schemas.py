@@ -20,7 +20,7 @@ class BookRead(BookBase):
 
 
 class BookReadWithUser(BookRead):
-    user : UserRead | None
+    user : UserRead 
 
 class BookCreate(BookBase):
     pass
